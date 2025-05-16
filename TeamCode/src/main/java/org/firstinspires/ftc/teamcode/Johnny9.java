@@ -27,7 +27,7 @@ public class Johnny9{
         MECHANUM,
         JOHNNY9,
         TEST,
-        TREBUCHET6
+
     }
 
     public enum Team {
@@ -42,22 +42,14 @@ public class Johnny9{
     //Definitions for global variables
 
     public DcMotor motorFrontLeft, motorFrontRight, motorBackLeft, motorBackRight;
-    public DcMotorEx slideMotor1, slideMotor2, clawMotor;
+
     //[] means array
     public DcMotor[] allDriveMotors;
-    public DcMotorEx[] allSlideMotors;
+
+    public Servo scissorLift;
 
 
-    //Outreach robot servos
-    public Servo lockServo;
-    // for outreach
-    public TouchSensor lockSensor;
 
-
-    // Competition teleop hardware
-    public TouchSensor bottomSensor;
-
-    public Servo clawServo;
 
     //public CRServo //future necessary robot functions using servos
     private IMU imu;
@@ -126,21 +118,12 @@ public class Johnny9{
                 motorFrontRight = hwMap.dcMotor.get("motorFrontRight");
                 motorBackLeft = hwMap.dcMotor.get("motorBackLeft");
                 motorBackRight = hwMap.dcMotor.get("motorBackRight");
-                slideMotor1 = hwMap.get(DcMotorEx.class,"slideMotor1");
-                slideMotor2 = hwMap.get(DcMotorEx.class,"slideMotor2");
-                clawMotor = hwMap.get(DcMotorEx.class,"clawMotor");
-                clawServo = hwMap.servo.get("clawServo");
 
-                // clawMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-                clawMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-                clawMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-                slideMotor1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-                slideMotor2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
+
+                scissorLift=hwMap.servo.get("scissorLift");
                 motorFrontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
                 motorBackLeft.setDirection(DcMotorSimple.Direction.REVERSE);
-                slideMotor2.setDirection(DcMotorSimple.Direction.REVERSE);
-                //slideMotor1.setDirection(DcMotorSimple.Direction.REVERSE);
 
                 imu = hwMap.get(IMU.class, "imu");
 
@@ -152,15 +135,8 @@ public class Johnny9{
 
                 imu.initialize(parameters);
                 //initialize touch sensor
-                bottomSensor=hwMap.touchSensor.get("bottomSensor");
 
                 allDriveMotors = new DcMotor[]{motorFrontLeft, motorFrontRight, motorBackLeft, motorBackRight};
-                allSlideMotors = new DcMotorEx[]{slideMotor1, slideMotor2};
-
-
-                //swebcamName = hwMap.get(WebcamName.class, "eyeofjohnny6");
-
-                //Add arm mechanism hardware devices here
 
 
                 break;
@@ -196,32 +172,7 @@ public class Johnny9{
 
                 break;
 
-            case TREBUCHET6:
 
-                motorFrontLeft = hwMap.dcMotor.get("motorFrontLeft");
-                motorFrontRight = hwMap.dcMotor.get("motorFrontRight");
-
-                motorFrontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
-
-
-                imu = hwMap.get(IMU.class, "imu");
-
-                parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
-                        RevHubOrientationOnRobot.LogoFacingDirection.FORWARD,
-                        RevHubOrientationOnRobot.UsbFacingDirection.LEFT));
-
-
-                imu.initialize(parameters);
-                //these are for Trebuchet
-                lockServo = hwMap.servo.get("lockServo");
-                lockSensor = hwMap.touchSensor.get("lockSensor");
-
-                break;
-
-            default:
-
-                telem.addLine("Invalid type " + drive + " passed to Johnny6's init function. Nothing has been set up ");
-                break;
         }
     }
 
@@ -260,16 +211,11 @@ public class Johnny9{
                 double backLeftPower = (y - x + turn) / denominator;
                 double frontRightPower = (y - x - turn) / denominator;
                 double backRightPower = (y + x - turn) / denominator;
-
                 telem.addLine("frontLeft: " + frontLeftPower);
                 telem.addLine("frontRight: " + frontRightPower);
                 telem.addLine("backLeft: " + backLeftPower);
                 telem.addLine("backRight: " + backRightPower);
-                telem.addData("sensor state", bottomSensor.isPressed());
-                telem.addData("slide motor 1 encoder:",slideMotor1.getCurrentPosition());
-                telem.addData("slide motor 2 encoder: ",slideMotor2.getCurrentPosition());
-                telem.addData("slide 1 target", slideMotor1.getTargetPosition());
-                telem.addData("slide 2 target", slideMotor2.getTargetPosition());
+
                 telem.addData("front left encoder:", motorFrontLeft.getCurrentPosition());
                 telem.addData("front right encoder:", motorFrontRight.getCurrentPosition());
                 telem.addData("back left encoder:", motorBackLeft.getCurrentPosition());
@@ -326,20 +272,7 @@ public class Johnny9{
                 motorBackRight.setPower(backRightPower);
 
                 break;
-            case TREBUCHET6:
-                denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(turn), 1);
 
-                //compute the values for power of each motor
-                // make -y because if it was on front, it would be backwards
-
-                backLeftPower = (-y - x) / denominator;
-                backRightPower = (-y + x) / denominator;
-
-                //assign power to motor
-                motorFrontLeft.setPower(backLeftPower);
-                motorFrontRight.setPower(backRightPower);
-
-                break;
         }
     }
 
@@ -353,63 +286,24 @@ public class Johnny9{
     }
 
 
-    //Trebuchet servos and other thingies
-    public void unLock() {
-        lockServo.setPosition(0.5);
-    }
 
-    public void Locked() {
-        lockServo.setPosition(1);
-    }
 
-    public boolean isLockSensorPressed() {
-        return lockSensor.isPressed();
-    }
 
-    public boolean isBottomSensorPressed() {
-        return bottomSensor.isPressed();
-    }
+
+
+
+
+
 
     //Competetion teleop movement for motors and servos
-    public void slideUp() {slideMotor1.setPower(1); slideMotor2.setPower(1);}
-    //public void slideDown() {slideMotor1.setPower(-1); slideMotor2.setPower(-1);}
-
 
     //This is for the claw
-    public void clawClose(){clawServo.setPosition(0.0);}
 
-    public void clawOpen(){clawServo.setPosition(0.2);}
 
-    public void slideTo(int tickTarget){
-        for(DcMotorEx x:allSlideMotors){
-            x.setTargetPosition(tickTarget);
-            x.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-            x.setPower(0.9);
-        }
-    }
 
-    public void rotateTo(int tickTarget){
-        clawMotor.setTargetPosition(tickTarget);
-        clawMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        clawMotor.setPower(1);
-    };
+    public void extendTheScissorLift(){scissorLift.setPosition(.3);}
+    public void retractTheScissorLift(){scissorLift.setPosition(0);}
 
-    public void slideLow(){slideTo(25);}
-    public void slideMedium(){
-        slideTo(1500);
-    }
-    public void slideHigh(){
-        slideTo(4000);
-    }
-    public void slideHang(){slideTo(3000);}
-    public void slideUpTick(){slideTo(slideMotor1.getCurrentPosition() + 100);}
-    public void slideDownTick(){slideTo(slideMotor1.getCurrentPosition() - 100);}
-    public void restClip(){rotateTo(-2500);}
-    public void initClip(){rotateTo(500);}
-    public void readyToClip(){rotateTo(1500);} //position underneth the bar so that the arm can clip
-    public void actuallyClip(){rotateTo(1200);}// position that moves the arm so that the specimen can be clipped
-
-    public void stopBottomSlide(){slideMotor1.setPower(0);slideMotor2.setPower(0);}
     public void moveForwardInches(double inches, double speed) {
 
         //Converts to integer by rounding. CASTS to int after rounding.
@@ -433,30 +327,7 @@ public class Johnny9{
     }
 
 
-    public void moveClaw(double speed)
-    {
-        clawMotor.setPower(speed);
-    }
-    public void moveSlide(double speed){
-        slideMotor1.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
-        slideMotor2.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
-        slideMotor1.setPower(speed); slideMotor2.setPower(speed);
-    }
 
-    public void moveClawMotor(double inches, double speed){
-        int tickTarget = (int) Math.round(inches * Y_INCH_TICKS);
-
-        resetClawMotor();
-
-        clawMotor.setTargetPosition(tickTarget);
-        clawMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        clawMotor.setPower(0.3);
-        while (clawMotor.isBusy()) {
-            telem.addData("claw motor encoder: ", clawMotor.getCurrentPosition());
-            telem.update();
-        }
-        resetClawMotor();
-    }
 
 
     public void moveBackwardInches(double inches, double speed) {
@@ -534,36 +405,8 @@ public class Johnny9{
                 telem.addData("front right encoder:", motorFrontRight.getCurrentPosition());
                 telem.addData("back left encoder:", motorBackLeft.getCurrentPosition());
                 telem.addData("back right encoder:", motorBackRight.getCurrentPosition());
-                telem.addData("slide motor 1 encoder:",slideMotor1.getCurrentPosition());
-                telem.addData("slide motor 2 encoder: ",slideMotor2.getCurrentPosition());
 
                 telem.update();
-            } else {
-                finished = true;
-            }
-        }
-    }
-
-    public void waitForSlideMotors() {
-        boolean finished = false;
-        while (!finished) {
-            if (slideMotor1.isBusy() || slideMotor2.isBusy()) {
-                telem.addData("slide motor 1 encoder:",slideMotor1.getCurrentPosition());
-                telem.addData("slide 1 target", slideMotor1.getTargetPosition());
-                telem.addData("slide motor 2 encoder: ",slideMotor2.getCurrentPosition());
-                telem.addData("slide 2 target", slideMotor2.getTargetPosition());
-                telem.update();
-            } else {
-                finished = true;
-            }
-        }
-    }
-
-    public void waitForClawMotor() {
-        boolean finished = false;
-        while (!finished) {
-            if(clawMotor.isBusy()) {
-                telem.addData("claw motor: ", clawMotor.getCurrentPosition());
             } else {
                 finished = true;
             }
@@ -578,18 +421,6 @@ public class Johnny9{
             x.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         }
     }
-    public void resetSlideEncoders(){
-        for (DcMotorEx x:allSlideMotors){
-            x.setPower(0);
-            x.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
-            x.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
-        }
-    }
 
-    public void resetClawMotor() {
-        clawMotor.setPower(0);
-        clawMotor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
-        clawMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-    }
 
 }
