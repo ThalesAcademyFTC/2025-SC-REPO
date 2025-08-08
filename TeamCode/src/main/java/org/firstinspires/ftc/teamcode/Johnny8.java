@@ -279,22 +279,6 @@ public class Johnny8{
         return imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
     }
 
-
-
-
-
-
-
-
-
-
-
-    //Competetion teleop movement for motors and servos
-
-    //This is for the claw
-
-
-
     public void extendTheScissorLift(){scissorLift.setPosition(.3);}
     public void retractTheScissorLift(){scissorLift.setPosition(0);}
 
