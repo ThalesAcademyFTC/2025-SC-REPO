@@ -23,7 +23,6 @@ public class Johnny8{
         MECHANUM,
         JOHNNY8,
         TEST,
-
     }
 
     public enum Team {
@@ -43,9 +42,6 @@ public class Johnny8{
     public DcMotor[] allDriveMotors;
 
     public Servo scissorLift;
-
-
-
 
     //public CRServo //future necessary robot functions using servos
     private IMU imu;
@@ -279,9 +275,6 @@ public class Johnny8{
         return imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
     }
 
-    public void extendTheScissorLift(){scissorLift.setPosition(.3);}
-    public void retractTheScissorLift(){scissorLift.setPosition(0);}
-
     public void moveForwardInches(double inches, double speed) {
 
         //Converts to integer by rounding. CASTS to int after rounding.
@@ -304,16 +297,11 @@ public class Johnny8{
 
     }
 
-
-
-
-
     public void moveBackwardInches(double inches, double speed) {
 
         moveForwardInches(-inches, -speed);
 
     }
-
 
     public void moveRightInches(double inches, double speed) {
 
