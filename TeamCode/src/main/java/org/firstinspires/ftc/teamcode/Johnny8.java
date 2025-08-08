@@ -1,23 +1,19 @@
 package org.firstinspires.ftc.teamcode;
 
-import static java.nio.file.Files.move;
-
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Servo;
 
-import org.firstinspires.ftc.robotcontroller.external.samples.SensorTouch;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import com.qualcomm.robotcore.hardware.TouchSensor;
-public class Johnny9{
+
+public class Johnny8{
     private HardwareMap hwMap;
 
     LinearOpMode auton;
@@ -25,7 +21,7 @@ public class Johnny9{
     OpMode teleop;
     public enum Drivetrain {
         MECHANUM,
-        JOHNNY9,
+        JOHNNY8,
         TEST,
 
     }
@@ -68,7 +64,7 @@ public class Johnny9{
 
     static final double Y_DEGREE_TICKS = 11.1; //may need to be changed
 
-    public Johnny9(OpMode opmode, Drivetrain drivetrain) {
+    public Johnny8(OpMode opmode, Drivetrain drivetrain) {
 
         this.teleop = opmode;
 
@@ -82,7 +78,7 @@ public class Johnny9{
         setupHardware();
     }
 
-    public Johnny9(LinearOpMode opmode, Drivetrain type) {
+    public Johnny8(LinearOpMode opmode, Drivetrain type) {
 
         this.auton = opmode;
 
@@ -97,7 +93,7 @@ public class Johnny9{
         telem.addLine("init motor test");
     }
 
-    public Johnny9(HardwareMap hardwareMap, Drivetrain drivetrain) {
+    public Johnny8(HardwareMap hardwareMap, Drivetrain drivetrain) {
 
         this.hwMap = hardwareMap;
 
@@ -112,7 +108,7 @@ public class Johnny9{
         //depending on the drive variable
         switch (drive) {
 
-            case JOHNNY9:
+            case JOHNNY8:
 
                 motorFrontLeft = hwMap.dcMotor.get("motorFrontLeft");
                 motorFrontRight = hwMap.dcMotor.get("motorFrontRight");
@@ -184,8 +180,6 @@ public class Johnny9{
         motorBackRight.setPower(0);
         motorFrontLeft.setPower(0);
         motorFrontRight.setPower(0);
-        //slideMotor1.setPower(0);
-        //slideMotor2.setPower(0);
 
     }
 
@@ -200,7 +194,7 @@ public class Johnny9{
 
         switch (drive) {
 
-            case JOHNNY9:
+            case JOHNNY8:
                 //Denominator is the larget motor power (absolute value) or 1
                 //This ensures all the powers maintain the same ratio, but only when
                 //at least one is out of the range [-1, 1]
