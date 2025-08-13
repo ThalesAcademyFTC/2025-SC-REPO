@@ -41,8 +41,6 @@ public class Johnny8{
     //[] means array
     public DcMotor[] allDriveMotors;
 
-    public Servo scissorLift;
-
     //public CRServo //future necessary robot functions using servos
     private IMU imu;
 
@@ -111,9 +109,6 @@ public class Johnny8{
                 motorBackLeft = hwMap.dcMotor.get("motorBackLeft");
                 motorBackRight = hwMap.dcMotor.get("motorBackRight");
 
-
-
-                scissorLift=hwMap.servo.get("scissorLift");
                 motorFrontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
                 motorBackLeft.setDirection(DcMotorSimple.Direction.REVERSE);
 
@@ -380,7 +375,7 @@ public class Johnny8{
     }
 
 
-    private void resetDriveEncoders() {
+    public void resetDriveEncoders() {
         for (DcMotor x: allDriveMotors) {
             x.setPower(0);
             x.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
