@@ -4,6 +4,7 @@ import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
@@ -37,6 +38,7 @@ public class Johnny8{
     //Definitions for global variables
 
     public DcMotor motorFrontLeft, motorFrontRight, motorBackLeft, motorBackRight;
+    public DcMotorEx slideMotor;
 
     //[] means array
     public DcMotor[] allDriveMotors;
@@ -108,9 +110,13 @@ public class Johnny8{
                 motorFrontRight = hwMap.dcMotor.get("motorFrontRight");
                 motorBackLeft = hwMap.dcMotor.get("motorBackLeft");
                 motorBackRight = hwMap.dcMotor.get("motorBackRight");
+                slideMotor = hwMap.get(DcMotorEx.class, "slideMotor1");
+
+                slideMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
                 motorFrontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
                 motorBackLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+                slideMotor.setDirection(DcMotor.Direction.REVERSE);
 
                 imu = hwMap.get(IMU.class, "imu");
 
@@ -205,6 +211,7 @@ public class Johnny8{
                 telem.addData("front right encoder:", motorFrontRight.getCurrentPosition());
                 telem.addData("back left encoder:", motorBackLeft.getCurrentPosition());
                 telem.addData("back right encoder:", motorBackRight.getCurrentPosition());
+                telem.addData("slide target", slideMotor.getTargetPosition());
 
                 //Assign that motor power to each motor
                 motorFrontLeft.setPower(frontLeftPower);
@@ -358,6 +365,31 @@ public class Johnny8{
     }
 
 
+    public void slideUp() {slideMotor.setPower(1);}
+
+
+    public void slideTo(int tickTarget){
+        slideMotor.setTargetPosition(tickTarget);
+        slideMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        slideMotor.setPower(0.9);
+    }
+
+    public void slideLow(){slideTo(25);}
+    public void slideMedium(){
+        slideTo(1500);
+    }
+    public void slideHigh(){
+        slideTo(4000);
+    }
+    public void slideHang(){slideTo(3000);}
+    public void slideUpTick(){slideTo(slideMotor.getCurrentPosition() + 100);}
+    public void slideDownTick(){slideTo(slideMotor.getCurrentPosition() - 100);}
+
+    public void moveSlide(double speed){
+        slideMotor.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+        slideMotor.setPower(speed);
+
+
     public void waitForMotors() {
         boolean finished = false;
         while (auton.opModeIsActive() && !finished && !auton.isStopRequested()) {
@@ -366,11 +398,34 @@ public class Johnny8{
                 telem.addData("front right encoder:", motorFrontRight.getCurrentPosition());
                 telem.addData("back left encoder:", motorBackLeft.getCurrentPosition());
                 telem.addData("back right encoder:", motorBackRight.getCurrentPosition());
+                telem.addData("slide motor encoder:",slideMotor.getCurrentPosition());
 
                 telem.update();
             } else {
                 finished = true;
             }
+        }
+    }
+
+
+    public void waitForSlideMotor() {
+        boolean finished = false;
+        while (!finished) {
+            if (slideMotor.isBusy()) {
+                telem.addData("slide motor encoder:",slideMotor.getCurrentPosition());
+                telem.addData("slide target", slideMotor.getTargetPosition());
+                telem.update();
+            } else {
+                finished = true;
+            }
+        }
+    }
+
+
+    public void resetSlideEncoder(){
+            slideMotor.setPower(0);
+            slideMotor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+            slideMotor.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
         }
     }
 
