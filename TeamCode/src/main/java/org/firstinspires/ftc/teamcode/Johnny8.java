@@ -22,7 +22,7 @@ public class Johnny8{
     public enum Drivetrain {
         MECHANUM,
         JOHNNY8,
-        TEST,
+        TEST
     }
 
     public enum Team {
