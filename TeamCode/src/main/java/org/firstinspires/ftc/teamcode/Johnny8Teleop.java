@@ -30,7 +30,18 @@ public class Johnny8Teleop extends OpMode {
         if (gamepad1.left_stick_x < 0){
             x=-x;
         }
-
+        if(gamepad1.dpad_up){
+            johnny8.slideUp();
+        }
+        if(gamepad1.dpad_down){
+            johnny8.slideLow();
+        }
+        if(gamepad1.dpad_right){
+            johnny8.slideMedium();
+        }
+        if(gamepad1.dpad_left){
+            johnny8.slideHang();
+        }
     }
 
 }
