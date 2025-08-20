@@ -295,9 +295,7 @@ public class Johnny8 {
         slideTo(25);
     }
 
-    public void slideMedium() {
-        slideTo(1500);
-    }
+    public void slideMedium() { slideTo(1500); }
 
     public void slideHigh() {
         slideTo(4000);

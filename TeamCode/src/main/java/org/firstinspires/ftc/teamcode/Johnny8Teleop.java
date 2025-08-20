@@ -11,10 +11,7 @@ public class Johnny8Teleop extends OpMode {
     static final double STRAFE_FACTOR=1.1;
 
     @Override
-    public void init(){
-        johnny8=new Johnny8(this,Johnny8.Drivetrain.JOHNNY8);
-    }
-
+    public void init(){johnny8=new Johnny8(this,Johnny8.Drivetrain.JOHNNY8);johnny8.resetSlideEncoder();}
     @Override
     public void loop(){
         double y=gamepad1.left_stick_y;
@@ -30,18 +27,16 @@ public class Johnny8Teleop extends OpMode {
         if (gamepad1.left_stick_x < 0){
             x=-x;
         }
-        if(gamepad1.dpad_up){
+        if(gamepad2.dpad_up) {
             johnny8.slideHigh();
-        }
-        if(gamepad1.dpad_down){
+        }else if(gamepad2.dpad_down){
             johnny8.slideLow();
-        }
-        if(gamepad1.dpad_right){
+        }else if(gamepad2.dpad_right){
             johnny8.slideMedium();
-        }
-        if(gamepad1.dpad_left){
+        }else if(gamepad2.dpad_left){
             johnny8.slideHang();
         }
+
     }
 
 }
