@@ -10,18 +10,18 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 
 public class Auton {
 
-    public Johnny8 Johnny8;
+    public Johnny8 johnny8;
 
     public void moveForwardInches(double inches,double speed){
         int tickTarget=(int) Math.round(inches*Y_INCH_TICKS);
-        Johnny8.resetDriveEncoders();
-        for(DcMotor x:Johnny8.allDriveMotors){
+        johnny8.resetDriveEncoder();
+        for(DcMotor x:johnny8.allDriveMotors){
             x.setTargetPosition(tickTarget);
             x.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         }
-        Johnny8.move(0,-speed,0);
-        Johnny8.waitForMotors();
-        Johnny8.resetDriveEncoders();
+        johnny8.move(0,-speed,0);
+        johnny8.waitForMotors();
+        johnny8.resetDriveEncoder();
     }
     public void moveBackwardInches(double inches, double speed){
         moveForwardInches(-inches,-speed);
@@ -29,21 +29,21 @@ public class Auton {
     public void moveRightInches(double inches,double speed){
         //tickTarget = position of motors
         int tickTarget=(int) Math.round(-inches*Y_INCH_TICKS);
-        Johnny8.resetDriveEncoders();
-        Johnny8.motorFrontLeft.setTargetPosition(tickTarget);
-        Johnny8.motorFrontRight.setTargetPosition(-tickTarget);
-        Johnny8.motorBackLeft.setTargetPosition(-tickTarget);
-        Johnny8.motorBackRight.setTargetPosition(tickTarget);
-        for (DcMotor x : Johnny8.allDriveMotors) {
+        johnny8.resetDriveEncoder();
+        johnny8.motorFrontLeft.setTargetPosition(tickTarget);
+        johnny8.motorFrontRight.setTargetPosition(-tickTarget);
+        johnny8.motorBackLeft.setTargetPosition(-tickTarget);
+        johnny8.motorBackRight.setTargetPosition(tickTarget);
+        for (DcMotor x : johnny8.allDriveMotors) {
 
             x.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         }
 
-        Johnny8.move(speed, 0, 0);
-        Johnny8.waitForMotors();
+        johnny8.move(speed, 0, 0);
+        johnny8.waitForMotors();
 
-        Johnny8.resetDriveEncoders();
+        johnny8.resetDriveEncoders();
     }
 
     public void moveLeftInches(double inches,double speed){
@@ -52,18 +52,18 @@ public class Auton {
     }
     public void turnRightDegrees(double degrees, double speed){
         int tickTarget=(int) Math.round(degrees*X_INCH_TICKS);
-        Johnny8.resetDriveEncoders();
-        Johnny8.motorFrontLeft.setTargetPosition(tickTarget);
-        Johnny8.motorFrontRight.setTargetPosition(-tickTarget);
-        Johnny8.motorBackLeft.setTargetPosition(tickTarget);
-        Johnny8.motorBackRight.setTargetPosition(-tickTarget);
+        johnny8.resetDriveEncoders();
+        johnny8.motorFrontLeft.setTargetPosition(tickTarget);
+        johnny8.motorFrontRight.setTargetPosition(-tickTarget);
+        johnny8.motorBackLeft.setTargetPosition(tickTarget);
+        johnny8.motorBackRight.setTargetPosition(-tickTarget);
         for(DcMotor x:Johnny8.allDriveMotors){
             x.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         }
 
-        Johnny8.move(0,0,speed);
-        Johnny8.waitForMotors();
-        Johnny8.resetDriveEncoders();
+        johnny8.move(0,0,speed);
+        johnny8.waitForMotors();
+        johnny8.resetDriveEncoders();
     }
     public void turnLeftDegrees(double degrees, double speed){
         turnRightDegrees(-degrees,-speed);

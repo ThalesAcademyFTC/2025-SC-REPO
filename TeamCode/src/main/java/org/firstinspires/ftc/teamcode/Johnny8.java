@@ -351,7 +351,13 @@ public class Johnny8 {
         }
     }
 
-
+    public void resetDriveEncoders(){
+        for (DcMotor x: allDriveMotors){
+            x.setPower(0);
+            x.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            x.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        }
+    }
     public void resetSlideEncoder() {
         slideMotor.setPower(0);
         slideMotor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
