@@ -45,7 +45,7 @@ public class Johnny8 {
     public DcMotor[] allDriveMotors;
 
     //public CRServo //future necessary robot functions using servos
-    private IMU imu;
+    public IMU imu;
 
     private IMU.Parameters parameters;
 

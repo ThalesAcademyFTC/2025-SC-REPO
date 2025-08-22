@@ -8,7 +8,7 @@ import static org.firstinspires.ftc.teamcode.Johnny8.Y_INCH_TICKS;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-public class Auton {
+public class AutonFunctions {
 
     public Johnny8 johnny8;
 
