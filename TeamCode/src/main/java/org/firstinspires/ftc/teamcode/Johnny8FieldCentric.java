@@ -28,7 +28,11 @@ public class Johnny8FieldCentric extends LinearOpMode {
                     BigJ.imu.resetYaw();
                 }
                 double botHeading = BigJ.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
+                double rotateX = x * Math.cos(-botHeading) - y * Math.sin(-botHeading);
+                double rotateY = x * Math.sin(-botHeading) + y * Math.cos(-botHeading);
+
             }
+
 
 
     }

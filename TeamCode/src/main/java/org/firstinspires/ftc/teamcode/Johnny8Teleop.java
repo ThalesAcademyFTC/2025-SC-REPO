@@ -16,7 +16,10 @@ public class Johnny8Teleop extends OpMode {
     public void loop(){
         double y=gamepad1.left_stick_y;
         double x=gamepad1.left_stick_x;
-
+        double rx=gamepad1.right_stick_x/2;
+        telemetry.addData("x:",x);
+        telemetry.addData("y:",y);
+        telemetry.addData("turn(rx):",rx);
         telemetry.update();
 
         y*=y;
@@ -26,7 +29,10 @@ public class Johnny8Teleop extends OpMode {
         x*=x;
         if (gamepad1.left_stick_x < 0){
             x=-x;
+
         }
+        johnny8.move(x,y,rx);
+
        /* if(gamepad2.dpad_up) {
             johnny8.slideHigh();
         }else if(gamepad2.dpad_down){
