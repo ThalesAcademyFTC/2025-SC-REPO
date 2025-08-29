@@ -53,6 +53,11 @@ public class Johnny8 {
     public WebcamName webcamName;
 
     //Put any CONSTANTS here
+    //Distance sensor=I2C port 2
+    //I2C pt 0=colorSensor
+    //Digital 1 port=LED RGB
+    //touch sensor=I2C port 1
+    //
 
     static final double Y_INCH_TICKS = 45;
 

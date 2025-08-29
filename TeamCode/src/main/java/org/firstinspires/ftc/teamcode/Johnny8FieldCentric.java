@@ -13,10 +13,11 @@ public class Johnny8FieldCentric extends LinearOpMode {
     @Override
     public void runOpMode() {
         BigJ = new Johnny8(this, Johnny8.Drivetrain.MECHANUM);
+        IMU imu = hardwareMap.get(IMU.class, "imu");
         IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
                 RevHubOrientationOnRobot.LogoFacingDirection.UP,
                 RevHubOrientationOnRobot.UsbFacingDirection.FORWARD));
-            BigJ.imu.initialize(parameters);
+            imu.initialize(parameters);
             waitForStart();
 
             while(opModeIsActive()){
@@ -27,9 +28,19 @@ public class Johnny8FieldCentric extends LinearOpMode {
                 if (gamepad1.options){
                     BigJ.imu.resetYaw();
                 }
-                double botHeading = BigJ.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
+                double botHeading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
                 double rotateX = x * Math.cos(-botHeading) - y * Math.sin(-botHeading);
                 double rotateY = x * Math.sin(-botHeading) + y * Math.cos(-botHeading);
+                double denominator = Math.max(Math.abs(rotateY) + Math.abs(rotateX) + Math.abs(rx), 1);
+                double frontLeftPower = (int) ((rotateY + rotateX + rx) / denominator);
+                double backLeftPower =(int) (rotateY - rotateX + rx) / denominator;
+                double frontRightPower =(int) (rotateY - rotateX - rx) / denominator;
+                double backRightPower =(int) (rotateY + rotateX - rx) / denominator;
+
+                BigJ.motorFrontLeft.setPower(frontLeftPower);
+                BigJ.motorBackLeft.setPower(backLeftPower);
+                BigJ.motorFrontRight.setPower(frontRightPower);
+                BigJ.motorBackRight.setPower(backRightPower);
 
             }
 
