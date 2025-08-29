@@ -39,14 +39,15 @@ public class Johnny8 {
 
     //Definitions for global variables
 
-    public DcMotor motorFrontLeft, motorFrontRight, motorBackLeft, motorBackRight;
+    public DcMotor motorFrontLeft, motorFrontRight, motorBackLeft, motorBackRight, motorArm;
     public DcMotorEx slideMotor;
+    public Servo servoArm;
 
     //[] means array
     public DcMotor[] allDriveMotors;
 
     //public CRServo //future necessary robot functions using servos
-    private IMU imu;
+    public IMU imu;
 
     private IMU.Parameters parameters;
 
@@ -112,9 +113,12 @@ public class Johnny8 {
                 motorFrontRight = hwMap.dcMotor.get("motorFrontRight");
                 motorBackLeft = hwMap.dcMotor.get("motorBackLeft");
                 motorBackRight = hwMap.dcMotor.get("motorBackRight");
+                motorArm = hwMap.dcMotor.get("armMotor");
                 slideMotor = hwMap.get(DcMotorEx.class, "slideMotor");
 
-                slideMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+                servoArm = hwMap.servo.get("armServo");
+
+                slideMotor.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
 
                 motorFrontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
                 motorBackLeft.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -281,6 +285,33 @@ public class Johnny8 {
     }
 
 
+    public void waitForMotors() {
+        boolean finished = false;
+        while (auton.opModeIsActive() && !finished && !auton.isStopRequested()) {
+            if (motorFrontLeft.isBusy() || motorBackLeft.isBusy() || motorFrontRight.isBusy() || motorBackRight.isBusy()) {
+                telem.addData("front left encoder:", motorFrontLeft.getCurrentPosition());
+                telem.addData("front right encoder:", motorFrontRight.getCurrentPosition());
+                telem.addData("back left encoder:", motorBackLeft.getCurrentPosition());
+                telem.addData("back right encoder:", motorBackRight.getCurrentPosition());
+                telem.addData("slide motor encoder:", slideMotor.getCurrentPosition());
+
+                telem.update();
+            } else {
+                finished = true;
+            }
+        }
+    }
+
+
+    public void resetDriveEncoders(){
+        for (DcMotor x: allDriveMotors){
+            x.setPower(0);
+            x.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            x.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        }
+    }
+
+    //Slide motor code to resurrect from the grave if so desired.
     public void slideUp() {
         slideMotor.setPower(1);
     }
@@ -320,23 +351,6 @@ public class Johnny8 {
         slideMotor.setPower(speed);
     }
 
-    public void waitForMotors() {
-        boolean finished = false;
-        while (auton.opModeIsActive() && !finished && !auton.isStopRequested()) {
-            if (motorFrontLeft.isBusy() || motorBackLeft.isBusy() || motorFrontRight.isBusy() || motorBackRight.isBusy()) {
-                telem.addData("front left encoder:", motorFrontLeft.getCurrentPosition());
-                telem.addData("front right encoder:", motorFrontRight.getCurrentPosition());
-                telem.addData("back left encoder:", motorBackLeft.getCurrentPosition());
-                telem.addData("back right encoder:", motorBackRight.getCurrentPosition());
-                telem.addData("slide motor encoder:", slideMotor.getCurrentPosition());
-
-                telem.update();
-            } else {
-                finished = true;
-            }
-        }
-    }
-
 
     public void waitForSlideMotor() {
         boolean finished = false;
@@ -351,16 +365,11 @@ public class Johnny8 {
         }
     }
 
-    public void resetDriveEncoders(){
-        for (DcMotor x: allDriveMotors){
-            x.setPower(0);
-            x.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            x.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        }
-    }
+
     public void resetSlideEncoder() {
         slideMotor.setPower(0);
         slideMotor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
         slideMotor.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
     }
+
 }
